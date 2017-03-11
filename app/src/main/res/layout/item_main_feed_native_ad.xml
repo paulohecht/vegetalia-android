@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
+    android:layout_gravity="center"
+    android:layout_width="match_parent"
+    android:layout_marginTop="10dp"
+    android:layout_height="300dp"
+    android:layout_margin="10dp"
+    card_view:cardCornerRadius="4dp"
+    >
+    <com.google.android.gms.ads.NativeExpressAdView
+        android:layout_gravity="center"
+        android:id="@+id/ad_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        ads:adUnitId="@string/admob_native_ad_unit_id"
+        ads:adSize="300x300">
+    </com.google.android.gms.ads.NativeExpressAdView>
+</android.support.v7.widget.CardView>
