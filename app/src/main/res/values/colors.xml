@@ -11,4 +11,6 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
 
+    <color name="loading_mask">#66FFFFFF</color>
+
 </resources>
