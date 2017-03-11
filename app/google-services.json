@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "567815444998",
+    "firebase_url": "https://vegetalia-9bc05.firebaseio.com",
+    "project_id": "vegetalia-9bc05",
+    "storage_bucket": "vegetalia-9bc05.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:567815444998:android:1e6a6abfa4c225fc",
+        "android_client_info": {
+          "package_name": "br.com.vegetalia.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "567815444998-sll0a9lu5auv161t8amalfi0hbeha75r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACcCzbOFQRmAHi6_XLFkfnxHG8PHO-ogU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
