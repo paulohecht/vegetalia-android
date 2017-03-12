@@ -15,7 +15,7 @@ public class Post {
         FirebaseDatabase.getInstance().getReference("posts").child(itemId).runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
-                int likes_count = mutableData.hasChild("like_count") ? mutableData.child("likes_count").getValue(Integer.class) : 0;
+                int likes_count = mutableData.hasChild("likes_count") ? mutableData.child("likes_count").getValue(Integer.class) : 0;
                 final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 DatabaseReference likeReference = FirebaseDatabase.getInstance().getReference("post_likes").child(itemId).child(userId);
                 mutableData.child("likes_count").setValue(Math.max(likes_count + (liked ? 1 : -1), 0));

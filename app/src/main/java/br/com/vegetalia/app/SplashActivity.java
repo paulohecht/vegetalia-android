@@ -15,6 +15,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.HashMap;
 
@@ -35,12 +39,14 @@ public class SplashActivity extends AppCompatActivity {
                             return;
                             //TODO: REDIRECT TO FAIL SCREEN...
                         }
-                        final DatabaseReference db = FirebaseDatabase.getInstance().getReference("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
-                        db.addListenerForSingleValueEvent(new ValueEventListener() {
+                        final DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+                        final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        final String userUri = "users/" + userId;
+                        db.child(userUri).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if (!dataSnapshot.exists()) {
-                                    //Set default values for user...
+
                                     HashMap users = new HashMap();
                                     users.put("name", null);
                                     users.put("image", null);
@@ -49,10 +55,16 @@ public class SplashActivity extends AppCompatActivity {
                                     users.put("posts_count", 0);
                                     users.put("followers_count", 0);
                                     users.put("followings_count", 0);
-                                    db.setValue(users);
+
+                                    HashMap updates = new HashMap();
+                                    updates.put(userUri, users);
+                                    updates.put("tokens/" + userId, FirebaseInstanceId.getInstance().getToken());
+
+                                    db.updateChildren(updates);
                                 }
                                 startActivity(new Intent(SplashActivity.this, MainActivity.class));
                                 finish();
+
                             }
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
