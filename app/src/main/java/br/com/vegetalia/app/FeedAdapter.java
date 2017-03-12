@@ -77,13 +77,21 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
+        String itemId;
+
         private DatabaseReference likeReference;
         private ValueEventListener likeEventListener;
+
+        private DataSnapshotObserver userObserver;
+        private DataSnapshotObserver likedObserver;
 
         public TextView title;
         public ImageView image;
         public ImageView likeButton;
         public TextView likesCount;
+
+        public ImageView userImage;
+        public TextView userName;
 
         public ViewHolder(View v) {
             super(v);
@@ -91,6 +99,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             likesCount = (TextView)v.findViewById(R.id.likes_count);
             image = (ImageView)v.findViewById(R.id.image);
             likeButton = (ImageView)v.findViewById(R.id.like_button);
+            userImage = (ImageView)v.findViewById(R.id.user_image);
+            userName = (TextView)v.findViewById(R.id.user_name);
         }
 
         private void reset() {
@@ -99,13 +109,65 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             image.setImageResource(R.drawable.placeholder_post);
             likeButton.setImageResource(R.drawable.ic_like_off);
             likeButton.setOnClickListener(null);
+
+            userImage.setImageResource(R.drawable.placeholder_profile);
+            userName.setText("");
+
+            if (userObserver != null) userObserver.cancel();
+            userObserver = null;
+
+            if (likedObserver != null) likedObserver.cancel();
+            likedObserver = null;
+
             if (likeReference != null) likeReference.removeEventListener(likeEventListener);
             likeReference = null;
             likeEventListener = null;
         }
 
         public void render(DataSnapshot dataSnapshot) {
-            reset();
+
+            String newItemId = dataSnapshot.getKey();
+            if (itemId != newItemId) {
+                reset();
+
+                userObserver = User.fetchProfile(dataSnapshot.child("user_id").getValue(String.class), new DataSnapshotObserver.OnDataSnapshotReceivedListener() {
+                    @Override
+                    public void onDataSnapshotReceived(DataSnapshot dataSnapshot) {
+                        Picasso.with(itemView.getContext())
+                                .load(dataSnapshot.child("image").getValue(String.class))
+                                .placeholder(R.drawable.placeholder_profile)
+                                .error(R.drawable.placeholder_profile)
+                                .into(userImage);
+                        userName.setText(dataSnapshot.child("name").getValue(String.class));
+                    }
+                });
+
+                likedObserver = Post.fetchLiked(newItemId, new DataSnapshotObserver.OnDataSnapshotReceivedListener() {
+                    @Override
+                    public void onDataSnapshotReceived(DataSnapshot likeDataSnapshot) {
+                        if (likeDataSnapshot.exists() && likeDataSnapshot.getValue(Boolean.class)) {
+                            likeButton.setImageResource(R.drawable.ic_like_on);
+                            likeButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Post.like(itemId, false);
+                                }
+                            });
+                        }
+                        else {
+                            likeButton.setImageResource(R.drawable.ic_like_off);
+                            likeButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Post.like(itemId, true);
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+            itemId = newItemId;
+
             title.setText(dataSnapshot.child("title").getValue(String.class));
             likesCount.setText(dataSnapshot.hasChild("likes_count") ? dataSnapshot.child("likes_count").getValue(Integer.class).toString() : "0");
             Picasso.with(itemView.getContext())
@@ -113,39 +175,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                     .placeholder(R.drawable.placeholder_post)
                     .error(R.drawable.placeholder_post)
                     .into(image);
-            final String itemId = dataSnapshot.getKey();
-
-            likeEventListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot likeDataSnapshot) {
-                    if (likeDataSnapshot.exists() && likeDataSnapshot.getValue(Boolean.class)) {
-                        likeButton.setImageResource(R.drawable.ic_like_on);
-                        likeButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Post.like(itemId, false);
-                            }
-                        });
-                    }
-                    else {
-                        likeButton.setImageResource(R.drawable.ic_like_off);
-                        likeButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Post.like(itemId, true);
-                            }
-                        });
-                    }
-                }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            };
-
-            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            likeReference = FirebaseDatabase.getInstance().getReference("post_likes").child(itemId).child(userId);
-            likeReference.addValueEventListener(likeEventListener);
         }
     }
 

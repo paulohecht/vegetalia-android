@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -19,6 +20,12 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            if (!FirebaseAuth.getInstance().getCurrentUser().isAnonymous()) {
+                Log.d(App.LOG_TAG, "Name: " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+                Log.d(App.LOG_TAG, "FB Name: " + FirebaseAuth.getInstance().getCurrentUser().getProviderData().get(0).getDisplayName());
+                Log.d(App.LOG_TAG, "Image: " + FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl());
+                Log.d(App.LOG_TAG, "FB Image: " + FirebaseAuth.getInstance().getCurrentUser().getProviderData().get(0).getPhotoUrl());
+            }
             continueToMainActivity();
             return;
         }

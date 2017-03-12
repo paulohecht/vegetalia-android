@@ -23,6 +23,8 @@ import android.widget.ImageView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -151,17 +153,33 @@ public class NewPostActivity extends AppCompatActivity {
 
         final DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         final String key = db.child("posts").push().getKey();
-        final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+//        Map userData = new HashMap();
+//        userData.put("name", user.getDisplayName());
+//        userData.put("image", user.getPhotoUrl());
+
         Map postValues = new HashMap();
-        postValues.put("user_id", userId);
+        postValues.put("user_id", user.getUid());
+//        postValues.put("user", userData);
         postValues.put("title", title);
         postValues.put("ingredients", ingredients);
         postValues.put("steps", steps);
         postValues.put("video_url", (!video_url.isEmpty() ? video_url : null) );
         postValues.put("created_at", ServerValue.TIMESTAMP);
 
+        Map postCardValues = new HashMap();
+        postValues.put("user_id", user.getUid());
+//        postValues.put("user", userData);
+        postValues.put("title", title);
+        postValues.put("video_url", (!video_url.isEmpty() ? video_url : null) );
+        postValues.put("created_at", ServerValue.TIMESTAMP);
+
         Map updateValues = new HashMap();
         updateValues.put("posts/" + key, postValues);
+        updateValues.put("user_posts/" + user.getUid() + "/" + key, postCardValues);
+
+        //TODO: Add to every follower feed...
 
         db.updateChildren(updateValues, new DatabaseReference.CompletionListener() {
             @Override
