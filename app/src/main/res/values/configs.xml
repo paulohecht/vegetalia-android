@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <string name="facebook_app_id">426912007498418</string>
+
     <string name="admob_app_id">ca-app-pub-9070439176252986~4790413750</string>
     <string name="admob_banner_ad_unit_id">ca-app-pub-9070439176252986/6267146958</string>
     <string name="admob_interstitial_ad_unit_id">ca-app-pub-9070439176252986/9220613358</string>
     <string name="admob_native_ad_unit_id">ca-app-pub-9070439176252986/3174079752</string>
     <string name="admob_test_device_id">B1B06A8BABBAECEC04CAAB4AC01DB504</string>
+
 </resources>

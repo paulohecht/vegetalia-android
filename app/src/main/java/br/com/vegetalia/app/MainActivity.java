@@ -2,6 +2,7 @@ package br.com.vegetalia.app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,11 +16,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,6 +32,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -53,7 +59,6 @@ public class MainActivity extends AppCompatActivity
         setupFab();
         setupBanner();
         setupInterstitial();
-
     }
 
     private void setupInterstitial() {
@@ -127,6 +132,59 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        setupDrawerHeader(navigationView.getHeaderView(0));
+    }
+
+    private void setupDrawerHeader(View headerView) {
+
+        final ImageView userImage = (ImageView) headerView.findViewById(R.id.user_image);
+        final TextView userDisplayName = (TextView) headerView.findViewById(R.id.user_display_name);
+        final View loginButton = headerView.findViewById(R.id.login_button);
+        final View logoutButton = headerView.findViewById(R.id.logout_button);
+
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, AuthenticateActivity.class));
+            }
+        });
+
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(MainActivity.this, SplashActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
+
+        FirebaseAuth.getInstance().addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+
+                    if (user.isAnonymous()) {
+                        loginButton.setVisibility(View.VISIBLE);
+                        logoutButton.setVisibility(View.GONE);
+                        userImage.setImageResource(R.drawable.placeholder_profile);
+                        userDisplayName.setText("Usuário Anônimo");
+                    }
+                    else {
+                        loginButton.setVisibility(View.GONE);
+                        logoutButton.setVisibility(View.VISIBLE);
+                        Picasso.with(MainActivity.this)
+                                .load(user.getPhotoUrl())
+                                .placeholder(R.drawable.placeholder_profile)
+                                .error(R.drawable.placeholder_profile)
+                                .into(userImage);
+                        userDisplayName.setText(user.getDisplayName());
+                    }
+                }
+            }
+        });
     }
 
     private void setupFab() {

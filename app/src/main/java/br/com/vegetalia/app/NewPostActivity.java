@@ -55,6 +55,13 @@ public class NewPostActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (FirebaseAuth.getInstance().getCurrentUser().isAnonymous()) {
+            startActivity(new Intent(NewPostActivity.this, AuthenticateActivity.class));
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_new_post);
 
         setupToolbar();

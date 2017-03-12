@@ -13,4 +13,7 @@
 
     <color name="loading_mask">#66FFFFFF</color>
 
+    <color name="facebook_button">#122791</color>
+    <color name="google_button">#af0808</color>
+
 </resources>

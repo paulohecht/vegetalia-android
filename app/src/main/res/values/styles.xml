@@ -22,11 +22,22 @@
         <item name="android:textColor">@color/inverse_text</item>
     </style>
 
+    <style name="AppTheme.FacebookBlockButton" parent="AppTheme.BlockButton">
+        <item name="android:background">@color/facebook_button</item>
+        <item name="android:drawableLeft">@drawable/ic_facebook</item>
+        <item name="android:textColor">@color/inverse_text</item>
+    </style>
+
+    <style name="AppTheme.GoogleBlockButton" parent="AppTheme.BlockButton">
+        <item name="android:background">@color/google_button</item>
+        <item name="android:drawableLeft">@drawable/ic_google</item>
+        <item name="android:textColor">@color/inverse_text</item>
+    </style>
+
     <style name="AppTheme.BlockButton">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">20dp</item>
-        <item name="android:layout_marginBottom">20dp</item>
+        <item name="android:padding">20dp</item>
     </style>
 
 </resources>
