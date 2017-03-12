@@ -167,7 +167,9 @@ public class AuthenticateActivity extends AppCompatActivity {
                                             DialogUtils.alert(AuthenticateActivity.this, "Ocorreu um erro ao salvar o perfil.");
                                             return;
                                         }
-                                        finish();
+                                        Intent intent = new Intent(AuthenticateActivity.this, SplashActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intent);
                                     }
                                 });
                             }
