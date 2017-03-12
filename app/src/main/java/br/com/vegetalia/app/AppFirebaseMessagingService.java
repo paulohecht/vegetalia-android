@@ -19,7 +19,13 @@ public class AppFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         if (remoteMessage.getData() != null) {
             Map map = remoteMessage.getData();
-            sendNotification(map.get("message").toString());
+            if (map.containsKey("type")) {
+                switch ((String)map.get("type")) {
+                    case "notification_like":
+                        sendNotification("Alguém curtiu sua foto.");
+                    default:
+                }
+            }
         }
     }
 
@@ -30,8 +36,8 @@ public class AppFirebaseMessagingService extends FirebaseMessagingService {
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.notification)
-                .setColor(getColor(R.color.primary))
-                .setContentTitle(getString(R.string.app_name))
+                .setColor(getResources().getColor(R.color.primary))
+                .setContentTitle(getResources().getString(R.string.app_name))
                 .setContentText(messageBody)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
