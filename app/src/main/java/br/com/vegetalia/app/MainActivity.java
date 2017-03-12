@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getChildrenCount() == 0 ) {
-                    //TODO: SHOW EMPTY STATE...
+                    findViewById(R.id.empty_card).setVisibility(View.VISIBLE);
                 }
             }
             @Override
@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity
         adapter.setItemBindListener(new FeedAdapter.ItemBindListener() {
             @Override
             public void onitemBind(int index) {
+                if (index == 0) findViewById(R.id.empty_card).setVisibility(View.GONE);
                 if ((index + 1) % INTERSTITIAL_AD_FREQUENCY == 0 && index > lastShownInterstitialIndex) {
                     if (interstitialAd.isLoaded()) {
                         interstitialAd.show();
