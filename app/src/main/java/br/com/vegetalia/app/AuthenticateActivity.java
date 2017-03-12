@@ -150,6 +150,8 @@ public class AuthenticateActivity extends AppCompatActivity {
                                         .build();
                                 user.updateProfile(profileChange);
 
+                                User.updateFCMToken();
+
                                 Map userData = new HashMap();
                                 userData.put("name", name);
                                 userData.put("image", image);
@@ -157,6 +159,7 @@ public class AuthenticateActivity extends AppCompatActivity {
                                 Map updateValues = new HashMap();
                                 updateValues.put("users/" + user.getUid(), userData);
                                 Log.d(App.LOG_TAG, updateValues.toString());
+
                                 db.updateChildren(updateValues, new DatabaseReference.CompletionListener() {
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -167,7 +170,6 @@ public class AuthenticateActivity extends AppCompatActivity {
                                         finish();
                                     }
                                 });
-
                             }
                         }
                     }
