@@ -1,5 +1,9 @@
 package br.com.vegetalia.app;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -85,6 +89,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         private DataSnapshotObserver userObserver;
         private DataSnapshotObserver likedObserver;
 
+        public View card;
+
         public TextView title;
         public ImageView image;
         public ImageView likeButton;
@@ -95,6 +101,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
         public ViewHolder(View v) {
             super(v);
+            card = v.findViewById(R.id.card_view);
             title = (TextView)v.findViewById(R.id.title);
             likesCount = (TextView)v.findViewById(R.id.likes_count);
             image = (ImageView)v.findViewById(R.id.image);
@@ -124,7 +131,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             likeEventListener = null;
         }
 
-        public void render(DataSnapshot dataSnapshot) {
+        public void render(final DataSnapshot dataSnapshot) {
 
             String newItemId = dataSnapshot.getKey();
             if (itemId != newItemId) {
@@ -175,6 +182,18 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                     .placeholder(R.drawable.placeholder_post)
                     .error(R.drawable.placeholder_post)
                     .into(image);
+
+            card.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity)itemView.getContext(),
+                        Pair.create((View)image, "post_image")
+                    );
+                    Intent intent = new Intent(itemView.getContext(), PostDetailsActivity.class);
+                    intent.putExtra("postId", itemId);
+                    itemView.getContext().startActivity(intent, options.toBundle());
+                }
+            });
         }
     }
 

@@ -155,10 +155,8 @@ public class AuthenticateActivity extends AppCompatActivity {
                                 Map userData = new HashMap();
                                 userData.put("name", name);
                                 userData.put("image", image);
-                                Log.d(App.LOG_TAG, userData.toString());
                                 Map updateValues = new HashMap();
                                 updateValues.put("users/" + user.getUid(), userData);
-                                Log.d(App.LOG_TAG, updateValues.toString());
 
                                 db.updateChildren(updateValues, new DatabaseReference.CompletionListener() {
                                     @Override

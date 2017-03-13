@@ -10,6 +10,11 @@ import com.google.firebase.database.Transaction;
 
 public class Post {
 
+    public static DataSnapshotObserver fetchPost (String postId, DataSnapshotObserver.OnDataSnapshotReceivedListener callback) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts").child(postId);
+        return DataSnapshotObserver.create(reference, callback);
+    }
+
     public static DataSnapshotObserver fetchLiked (String postId, DataSnapshotObserver.OnDataSnapshotReceivedListener callback) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("post_likes").child(postId).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         return DataSnapshotObserver.create(reference, callback);
